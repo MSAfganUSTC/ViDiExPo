@@ -1,9 +1,22 @@
-# ViDiExPo: Video-Driven Disentangled Identity–Semantic Fusion for Controllable Expression and Pose in Diffusion
+# ViDiExPo: Video-Supervised Disentanglement with Interaction-Aware Fusion for Controllable Expression and Pose in Diffusion Models
 
 **Paper:** ViDiExPo (Expert Systems with Applications, submitted June 2026)  
 **Authors:** Muhammad Sher Afgan, Bin Liu*, Kai Zou, Wajahat Khalid, Dianmo Sheng, Mamoona Naveed Asghar  
-**Institutions:** USTC & University of Galway  
+**Institutions:**  
+- School of Cyber Science and Technology, University of Science and Technology of China, and Anhui Province Key Laboratory of Digital Security, 96 Jinzhai Road, Hefei, 230026, Anhui, China  
+- School of Computer Science, University of Galway, University Road, Galway, H91 TK33, Co Galway, Ireland  
+
 **Code:** https://github.com/MSAfganUSTC/ViDiExPo.git
+
+---
+
+## Abstract
+
+Controllable facial image synthesis requires simultaneously preserving identity consistency, enabling fine-grained control over facial expression and head pose, and maintaining visual realism — three properties that existing methods fail to jointly achieve. Existing diffusion-based methods optimize representation disentanglement or conditional interaction independently, leading to a trade-off between controllability and preservation of coherent identity–semantic dependencies.
+
+To address this, we introduce **ViDiExPo**, a two-stage framework that formulates controllable facial synthesis as identity–semantic factorization followed by structured interaction-aware prior to diffusion conditioning. First, we propose **Dynamic Semantic and Identity Disentanglement (DSID)**, which learns factorized identity and semantic embeddings using identity-consistent video-frame pairs exhibiting semantic variation, jointly leveraging mutual information minimization and metric learning. Unlike temporally conditioned video methods, DSID uses video coherence solely as a supervisory prior while maintaining static-image inference. While factorization improves separation, it may suppress structured dependencies required to model interactions in downstream generation. To mitigate this, we introduce **Mutual Re-Interaction Fusion (MRF)**, a bidirectional cross-attention mechanism that explicitly reconstructs structured identity–semantic interactions before diffusion, enabling interaction-aware conditioning.
+
+Extensive experiments show that ViDiExPo achieves an identity similarity of 0.52 under cross-identity expression and pose transfer, while maintaining 82% expression accuracy and a pose error of 2.50. ViDiExPo outperforms existing diffusion-based methods across identity preservation, expression accuracy, and pose alignment, supporting applications in emotion dataset synthesis, facial behavior simulation, and forensic reconstruction.
 
 ---
 
@@ -21,11 +34,14 @@ I_id (identity) + I_ref (reference) + T (text)
 [Diffusion SDXL] →  Î              output image
 ```
 
+![Framework Overview](Images/DeepExPo_Framework.png)  
+**Description:** ViDiExPo generates identity-consistent facial images with controllable expressions and head poses using three inputs: a text prompt for context, an identity image, and a reference image for semantic cues. Identity and semantic features are disentangled via DSID and fused via the MRF module into a pre-trained Stable Diffusion XL backbone.
+
 **Key components:**
 - **DSID** (Dynamic Semantic and Identity Disentanglement): learns factorized identity and semantic embeddings using identity-consistent paired frames with semantic variation, with explicit MI minimization via CLUB
 - **MRF** (Mutual Re-Interaction Fusion): bidirectional cross-attention that reconstructs identity–semantic dependencies before diffusion conditioning
 
-**Key results (Table 5):** IDsim=0.52, Semdist=0.29, EXPAcc=82%, Poseerr=2.50, FID=19.21
+**Key results:** IDsim=0.52, Semdist=0.29, EXPAcc=82%, Poseerr=2.50, FID=19.21
 
 ---
 
@@ -75,6 +91,20 @@ ViDiExPo/
 ├── evaluate.py                    # All evaluation metrics (Section 5.1)
 └── requirements.txt
 ```
+
+---
+
+## 🚀 Quick Start / Notebook
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Launch Jupyter and open the notebook:**
+   ```bash
+   jupyter notebook scripts/DeepExPo_Inference.ipynb
+   ```
 
 ---
 
@@ -165,6 +195,60 @@ python inference.py \
 
 ---
 
+## 🖼️ Inference Results
+
+![Inference Results](Images/DeepExPo_inference.png)  
+**Description:** ViDiExPo inference samples showing accurate expression and pose synthesis while maintaining subject identity and contextual fidelity.
+
+### 🔁 Comparison with Baselines
+
+#### 🧑‍🎨 Personalized Generation Baselines
+![Comparison with Personalized Methods](Images/DeepExPovsPersonalized.png)  
+**Description:** Qualitative comparison against personalized generation models. **ViDiExPo** maintains strong identity consistency while effectively transferring facial semantics and adhering to contextual prompts.
+
+#### 😮 Expression Generation Baselines
+![Comparison with Expression Methods](Images/DeepExPovsExpressio.png)  
+**Description:** **ViDiExPo** achieves better identity preservation and precise semantic transfer (e.g., mouth and eye region alignment) compared to other expression generation techniques.
+
+### 📊 Quantitative Evaluation
+
+![Qualitative Results](Images/DeepExPo_Table_personalized.png)  
+**Description:** Quantitative evaluation highlights **ViDiExPo**'s superior performance in identity preservation and expression accuracy. Qualitative results emphasize expression realism, head pose accuracy, and facial fidelity.
+
+### 🎯 Additional Results
+
+#### 🧔 Male Subjects
+![Male Subjects](Images/Figure_3_More_results_Male.png)  
+ViDiExPo successfully generates realistic male facial expressions while preserving identity.
+
+#### 👩 Female Subjects
+![Female Subjects](Images/Figure_4_More_results_Female.png)  
+Expression synthesis for female subjects across five expression types with high visual fidelity.
+
+#### 🧒 Children Across Ethnic Groups
+![Children Across Ethnic Groups](Images/Figure_5_More_results_Kids.png)  
+Results demonstrate effective generation for young boys and girls of Indian, African, and European descent.
+
+#### 🌍 Ethnic Diversity
+![Ethnic Diversity](Images/Figure_6_More_results_Ethinic.png)  
+The model maintains identity and expression accuracy across various ethnic groups.
+
+#### 🔄 Cross‑Identity/Reference Combinations
+![Cross‑Identity/Reference Combinations](Images/Figure_8_More_results_extream.png)  
+Demonstrates flexibility in handling cross‑gender and cross‑ethnicity transformations while preserving identity.
+
+#### 🙆‍♂️ Extreme Orientations
+![Extreme Orientations](Images/Figure_7_More_results_cross.png)  
+Results show model limitations when both identity and reference inputs have extreme head poses, reflecting the boundaries of identity fidelity under such conditions.
+
+---
+
+### ✅ Conclusion
+
+ViDiExPo demonstrates robust performance in identity-preserving facial expression synthesis across diverse subjects, conditions, and contexts. Its ability to handle complex semantic cues and maintain realism positions it as a strong foundation for personalized human image generation in real-world applications.
+
+---
+
 ## Evaluation
 
 ```bash
@@ -210,8 +294,8 @@ All training images sourced from public datasets (CelebA-HQ, AffectNet) only.
 
 ```bibtex
 @article{afgan2026videxpo,
-  title     = {ViDiExPo: Video-Driven Disentangled Identity–Semantic Fusion
-               for Controllable Expression and Pose in Diffusion},
+  title     = {ViDiExPo: Video-Supervised Disentanglement with Interaction-Aware Fusion
+               for Controllable Expression and Pose in Diffusion Models},
   author    = {Afgan, Muhammad Sher and Liu, Bin and Zou, Kai and Khalid, Wajahat
                and Sheng, Dianmo and Asghar, Mamoona Naveed},
   journal   = {Expert Systems with Applications},
